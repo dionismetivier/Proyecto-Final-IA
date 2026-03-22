@@ -1,7 +1,10 @@
 # Proyecto-de-Final-IA
 
-## Nombre
+## Nombre:
+# Dionis Metivier Santana
 
-## Matrícula
+## Matrícula:
+# 24-EISN-2-022
 
-## Proyecto
+## Proyecto:
+# Calculador de Calorias de Comida
