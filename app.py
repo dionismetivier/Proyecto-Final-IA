@@ -53,3 +53,4 @@ def obtener_Calorias(nombre):
         return res['hints'] [0] ['Comida'] ['Nutrientes'] ['Energias_Kilocalorias']
     except:
         return 120.0
+    
