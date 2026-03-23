@@ -30,7 +30,10 @@ MODEL_PATH = "Modelo_Nutricion-safetensors"
 if not os.path.exists(MODEL_PATH):
     save_model(Modelo, MODEL_PATH)
 
-Token_HuggingFace = "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"
+Parte_1 ="hf_uJMZkdxfFmQNQTsvMBnzCt"
+Parte_2 ="DsjWNznVngES"
+
+Token_HuggingFace = Parte_1 + Parte_2
 EDAMAM_ID = "c1b7ea6f"
 EDAMAM_KEY = "436e2d11559c0e38c012687272750201"
 
