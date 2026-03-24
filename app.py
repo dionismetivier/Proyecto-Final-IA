@@ -1,58 +1,90 @@
 import torch
 from torch import nn
 import gradio as gr
-import requests
-import io
-from PIL import Image
+from torchvision import models, transforms
 from gtts import gTTS
-import os
-from safetensors.torch import save_model, load_model
+import io
+import requests
 
 # Mis Datos:
 # Dionis Metivier Santana
 # 24-EISN-2-022
 # Proyecto Final: Calculador de Calorias de Comidas
 
+LOGMEAL_TOKEN = "c0d39bd02a471568df2035cd44156c6494459265"
+EDAMAM_ID = "c1b7ea6f"
+EDAMAM_KEY = "436e2d11559c0e38c012687272750201"
+
 #1. Cerebro de la aplicacion para recibir datos de las comidas y saber como procesarlas para darnos el resultado final
 class ModeloNutricion (nn.Module):
     def __init__(self):
-        super(ModeloNutricion).__init__()
+        super().__init__()
         self.fc = nn.Linear(1, 1)
-
     def forward(self, x):
         return self.fc(x)
     
 #2. Configuracion y guardado del progreso que se realice de la IA 
 Modelo = ModeloNutricion()
-MODEL_PATH = "Modelo_Nutricion-safetensors"
+Modelo.eval()
 
-#3. Logica de seguridad ya que nos asegura que el trabajo no se pierda por algun fallo.
-if not os.path.exists(MODEL_PATH):
-    save_model(Modelo, MODEL_PATH)
+def detectar_comida(img_pil):
+     url = 'https://api.logmeal.es/v2/image/recognition/complete'
+     headers = {'Authorization': f'Bearer {LOGMEAL_TOKEN}'}
 
-Parte_1 ="hf_uJMZkdxfFmQNQTsvMBnzCt"
-Parte_2 ="DsjWNznVngES"
+     buf = io.BytesIO()
+     img_pil.save(buf, format= 'JPEG')
+     files = {'image': buf.getvalue()}
 
-Token_HuggingFace = Parte_1 + Parte_2
-EDAMAM_ID = "c1b7ea6f"
-EDAMAM_KEY = "436e2d11559c0e38c012687272750201"
+     try:
+          response = requests.post(url, files=files, headers=headers)
+          data = response.json()
+          nombre = data['recognition_results'][0]['name']
+          return nombre
+     except:
+          return "food"
+     
+def obtener_calorias(nombre):
+     url = "https://api.edamam.com/api/food-database/v2/parser"
+     params = {"app_id": EDAMAM_ID, "app_key": EDAMAM_KEY, "ingr": nombre}
+     try:
+          res =requests.get(url, params=params).json()
+          return float(res['hints'][0]['food']['nutrients']['ENERC_KCAL'])
+     except:
+          return 150.0
 
-def identificar_comidas(img_pil):
-    url= "https://api-inference.huggingface.co/models/google/vit-base-patch16-224"
-    headers = {"Autorizacion": f"Bearer {Token_HuggingFace}"}
-    buf = io.BytesIO()
-    img_pil.save(buf, format= 'JPEG')
+def analisis_plato(img_pil, gramos):
+    if img_pil is None: 
+            return "Captura Imagen", None
+        
+    nombre_alimento = detectar_comida(img_pil)
+    calorias = obtener_calorias(nombre_alimento)
+    
+    with torch.no_grad():
+        base = torch.tensor([[float(calorias)]])
+        prediccion = Modelo(base)
+        resultado = (abs(prediccion.item()) / 100.0) * float(gramos)
+        calorias = round(resultado, 2)
 
-    response = requests.post(url, headers=headers, data=buf.getvalue())
-    if response.status_code == 200:
-       return response.json() [0] ['label']
-    return "Comida"
+    Voz_resultado = f"He identificado {nombre_alimento}. Son aproximadamente {calorias} calorias en {gramos} gramos."
+    tts = gTTS(text=Voz_resultado, lang= 'es')
+    tts.save("resultado_final.mp3")
 
-def obtener_Calorias(nombre):
-    url = f"https://api.edamam.com/api/food-database/v2/parser"
-    params = {"ID_Aplicacion": EDAMAM_ID, "Key_Aplicacion": EDAMAM_KEY, "ingredientes": nombre}
-    res = requests.get(url, params=params).json()
-    try:
-        return res['hints'] [0] ['Comida'] ['Nutrientes'] ['Energias_Kilocalorias']
-    except:
-        return 120.0
+    return Voz_resultado, "resultado_final.mp3"
+    
+with gr.Blocks(theme= 'Soft') as interfaz:
+    gr.Markdown("# Calculador de Calorias")
+    gr.Markdown("Sube un archivo desde tu pc o utiliza la Webcam")
+
+    with gr.Row():
+            with gr.Column():
+                img_input = gr.Image(sources=["webcam", "upload"], type="pil", label="Camara en Vivo")
+                peso_input = gr.Number(label="Gramos de la porcion", value=100)
+                btn = gr.Button("Analisis de Plato", variant="primary")
+
+            with gr.Column():
+                txt_output = gr.Textbox(label="Analisis")
+                aud_output = gr.Audio(label="Audio", autoplay=True)
+    btn.click(analisis_plato, [img_input, peso_input], [txt_output, aud_output])
+
+if __name__ == "__main__":
+    interfaz.launch()
