@@ -15,11 +15,11 @@
 
 # gradio (Para el apartado visual de la aplicacion).
 
-# gTTS (Sistema de voz para anunciar resultados)
+# Coqui TTS (Sistema de voz para anunciar resultados)
 
-# Hugging faces (API externa para reconocer la foto que se sube o se tira mediante la camara a la aplicacion)
+# Hugging faces (API externa para reconocer la foto que se sube o se tira mediante la camara a la aplicacion, pero lo instale directamente en la terminal de VS Code para usar un modelo entrenado de este)
 
-# Edamam (API externa que te dice los datos nutricionales del alimento subido a la aplicacion)
+# Edamam (API externa que te dice los datos nutricionales exactos y precisos del alimento subido a la aplicacion)
 
 
 
