@@ -118,7 +118,7 @@ class ModeloNutricion(nn.Module):
         return self.fc(x)
 
 
-# 2. Cargar CLIP (la primera descargara 600MB, pero ya luego se quedara en el cache)
+# Cargar CLIP (la primera descargara 600MB, pero ya luego se quedara en el cache)
 print("Cargando modelo CLIP...")
 dispositivo  = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 clip_modelo  = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(dispositivo)
@@ -309,6 +309,6 @@ with gr.Blocks(css=css) as interfaz:
 
     btn.click(analisis_plato, [img_input, peso_input], [txt_output, aud_output])
 
-#Arranque principal de la aplicacion completa (le puse el share=True para que funcionara tanto de manera local y publico)
+# Arranque principal de la aplicacion completa (le puse el share=True para que funcionara tanto de manera local y publico)
 if __name__ == "__main__":
     interfaz.launch(theme='Soft', share=True)
