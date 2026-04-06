@@ -1,26 +1,23 @@
 # Proyecto-de-Final-IA
 
 ## Nombre:
-# Dionis Metivier Santana
+Dionis Metivier Santana
 
 ## Matrícula:
-# 24-EISN-2-022
+24-EISN-2-022
 
 ## Proyecto:
-# Calculador de Calorias de Comida
+Calculador de Calorias de Comida
 
-# Este proyecto consiste en una aplicacion que nos calculara la cantidad de calorias que tiene nuestro plato de comida dependiendo de la cantidad que tenga, para esto estaremos utilizando:
+Este proyecto consiste en una aplicacion que nos calculara la cantidad de calorias que tiene la comida por camara en vivo (es decir webcam) o que nosotros agreguemos una imagen que tengamos guardada en nuestra PC y en la misma aplicacion se puede variar los gramos por porcion y asi saber cuantas calorias tiene segun los gramos por porcion que añadamos, para esto estaremos utilizando:
 
-# pytorch (para tomar los datos de Edamam y el peso que se puso para hacer el cálculo final mediante tensores.).
+# https://youtu.be/Kh4wWlffYfc
+pytorch (es lo que permite que todo lo que hagamos en la aplicacion funcione correctamente).
 
-# gradio (Para el apartado visual de la aplicacion).
+gradio (Para el apartado visual de la aplicacion).
 
-# Coqui TTS (Sistema de voz para anunciar resultados)
+gTTS (Sistema que convierte el texto de resultado en voz)
 
-# Hugging faces (API externa para reconocer la foto que se sube o se tira mediante la camara a la aplicacion, pero lo instale directamente en la terminal de VS Code para usar un modelo entrenado de este)
+CLIPMODEL (Modelo que fue desarrollado por OpenAI, que entiende y mira la imagen que pongamos en la aplicacion)
 
-# Edamam (API externa que te dice los datos nutricionales exactos y precisos del alimento subido a la aplicacion)
-
-
-
-
+HuggingFace (Aunque no lo uso directamente pero se usa para instalar el CLIPMODEL ya que este modelo es creado, mantenido y alojado por HuggingFace)
